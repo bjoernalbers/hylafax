@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe HylaFAX do
   it 'has a version number' do
-    expect(described_class::VERSION).not_to be nil
+    expect(described_class::VERSION).to eq '0.1.0'
   end
 
   describe '.senfax' do
