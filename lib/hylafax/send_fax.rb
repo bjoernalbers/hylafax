@@ -7,7 +7,7 @@ module HylaFAX
     DEFAULT_TMP_DIR   = 'tmp'
 
     attr_reader :ftp, :host, :port, :user, :password, :dialstring, :document,
-      :tmp_dir
+      :tmp_dir, :job_id
 
     def initialize(opts = {})
       @ftp        = opts.fetch(:ftp)      { Net::FTP.new }
@@ -18,6 +18,7 @@ module HylaFAX
       @tmp_dir    = opts.fetch(:tmp_dir)  { DEFAULT_TMP_DIR }
       @dialstring = opts.fetch(:dialstring)
       @document   = opts.fetch(:document)
+      @job_id     = nil
     end
 
     def run
@@ -29,6 +30,7 @@ module HylaFAX
       set_dialstring
       set_document
       submit_job
+      job_id
     end
 
     private
@@ -58,7 +60,8 @@ module HylaFAX
     end
 
     def create_new_job
-      ftp.sendcmd('JNEW')
+      /jobid:\s+(\d+)\s+/ =~ ftp.sendcmd('JNEW')
+      @job_id = $1.to_i if $1
     end
 
     def set_lasttime

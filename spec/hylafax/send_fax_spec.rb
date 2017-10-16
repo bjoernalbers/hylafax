@@ -33,6 +33,11 @@ module HylaFAX
           with("JPARM DOCUMENT \"tmp/fb2e9fe62036b19cc3488b11fd64041a\"").ordered
         expect(ftp).to have_received(:sendcmd).with('JSUBM').ordered
       end
+
+      it 'returns job id' do
+        allow(subject).to receive(:job_id) { 42 }
+        expect(subject.run).to eq 42
+      end
     end
 
     describe '#upload_document' do
@@ -92,6 +97,25 @@ module HylaFAX
         it 'is true' do
           expect(subject.send(:document_uploaded?)).to eq true
         end
+      end
+    end
+
+    describe '#create_new_job' do
+      before do
+        allow(ftp).to receive(:sendcmd) {
+          "200 New job created: jobid: 23 groupid: 5.\n"
+        }
+      end
+
+      it 'sends "JNEW" command' do
+        subject.send(:create_new_job)
+        expect(ftp).to have_received(:sendcmd).with('JNEW')
+      end
+
+      it 'saves job id' do
+        expect(subject.job_id).to be nil
+        subject.send(:create_new_job)
+        expect(subject.job_id).to eq 23
       end
     end
   end
