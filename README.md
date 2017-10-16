@@ -29,7 +29,9 @@ Sending a fax:
 ```ruby
 require 'hylafax'
 
-HylaFAX.sendfax(dialstring: '0123456', document: 'foo.pdf')
+HylaFAX.sendfax(host: '10.2.2.1', dialstring: '0123456', document: 'foo.pdf')
+
+# This will send the fax and return the job id.
 ```
 
 
