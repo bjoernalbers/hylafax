@@ -50,7 +50,7 @@ module HylaFAX
     end
 
     def document_filename
-      Digest::MD5.file(document).hexdigest
+      @document_filename ||= Digest::MD5.file(document).hexdigest
     end
 
     def document_uploaded?
