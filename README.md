@@ -1,5 +1,6 @@
 # The Ruby HylaFAX Client
 
+[![Gem Version](https://badge.fury.io/rb/hylafax.svg)](https://badge.fury.io/rb/hylafax)
 [![Build Status](https://travis-ci.org/bjoernalbers/hylafax.svg?branch=master)](https://travis-ci.org/bjoernalbers/hylafax)
 
 Send faxes with a
