@@ -10,33 +10,51 @@ module HylaFAX
 
     describe '#run' do
       before do
-        allow(ftp).to receive(:connect)
-        allow(ftp).to receive(:login)
-        allow(ftp).to receive(:sendcmd)
-        allow(ftp).to receive(:put)
-        allow(subject).to receive(:document_uploaded?) { false }
+        %i{
+          connect
+          login
+          upload_document
+          create_new_job
+          set_lasttime
+          set_dialstring
+          set_document
+          submit_job
+        }.each do |cmd|
+          allow(subject).to receive(cmd)
+        end
       end
 
-      it 'sends fax via ftp' do
+      it 'executes ftp commands in the right order' do
         subject.run
-        expect(ftp).to have_received(:connect).with('127.0.0.1', 4559).ordered
-        expect(ftp).to have_received(:login).with('anonymous', 'anonymous').
-          ordered
-        expect(ftp).to have_received(:put).
-          with(document, 'tmp/fb2e9fe62036b19cc3488b11fd64041a').ordered
-        expect(ftp).to have_received(:sendcmd).with('JNEW').ordered
-        expect(ftp).to have_received(:sendcmd).with('JPARM LASTTIME 000259').
-          ordered
-        expect(ftp).to have_received(:sendcmd).
-          with("JPARM DIALSTRING \"#{dialstring}\"").ordered
-        expect(ftp).to have_received(:sendcmd).
-          with("JPARM DOCUMENT \"tmp/fb2e9fe62036b19cc3488b11fd64041a\"").ordered
-        expect(ftp).to have_received(:sendcmd).with('JSUBM').ordered
+        expect(subject).to have_received(:connect).ordered
+        expect(subject).to have_received(:login).ordered
+        expect(subject).to have_received(:upload_document).ordered
+        expect(subject).to have_received(:create_new_job).ordered
+        expect(subject).to have_received(:set_lasttime).ordered
+        expect(subject).to have_received(:set_dialstring).ordered
+        expect(subject).to have_received(:set_document).ordered
+        expect(subject).to have_received(:submit_job).ordered
       end
 
       it 'returns job id' do
         allow(subject).to receive(:job_id) { 42 }
         expect(subject.run).to eq 42
+      end
+    end
+
+    describe '#connect' do
+      it 'connects by default to localhost' do
+        allow(ftp).to receive(:connect)
+        subject.send(:connect)
+        expect(ftp).to have_received(:connect).with('127.0.0.1', 4559)
+      end
+    end
+
+    describe '#login' do
+      it 'logs in by default as anonymous' do
+        allow(ftp).to receive(:login)
+        subject.send(:login)
+        expect(ftp).to have_received(:login).with('anonymous', 'anonymous')
       end
     end
 
@@ -67,6 +85,40 @@ module HylaFAX
           subject.send(:upload_document)
           expect(ftp).not_to have_received(:put)
         end
+      end
+    end
+
+    describe '#set_lasttime' do
+      it 'sets lasttime by default to 3 hours' do
+        allow(ftp).to receive(:sendcmd)
+        subject.send(:set_lasttime)
+        expect(ftp).to have_received(:sendcmd).with('JPARM LASTTIME 000259')
+      end
+    end
+
+    describe '#set_dialstring' do
+      it 'sets the dialstring' do
+        allow(ftp).to receive(:sendcmd)
+        subject.send(:set_dialstring)
+        expect(ftp).to have_received(:sendcmd).
+          with("JPARM DIALSTRING \"#{dialstring}\"")
+      end
+    end
+
+    describe '#set_document' do
+      it 'sets the document' do
+        allow(ftp).to receive(:sendcmd)
+        subject.send(:set_document)
+        expect(ftp).to have_received(:sendcmd).
+          with("JPARM DOCUMENT \"tmp/fb2e9fe62036b19cc3488b11fd64041a\"")
+      end
+    end
+
+    describe '#submit_job' do
+      it 'submits the job' do
+        allow(ftp).to receive(:sendcmd)
+        subject.send(:submit_job)
+        expect(ftp).to have_received(:sendcmd).with('JSUBM')
       end
     end
 
