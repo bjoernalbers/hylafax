@@ -1,5 +1,7 @@
 # The Ruby HylaFAX Client
 
+[![Build Status](https://travis-ci.org/bjoernalbers/hylafax.svg?branch=master)](https://travis-ci.org/bjoernalbers/hylafax)
+
 Send faxes with a
 [HylaFAX](http://www.hylafax.org/)
 server via Ruby.
