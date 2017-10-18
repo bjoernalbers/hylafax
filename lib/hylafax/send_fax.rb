@@ -1,6 +1,7 @@
 module HylaFAX
   class SendFax < Command
     DEFAULT_TMP_DIR = 'tmp'
+    DOCUMENT_PREFIX = 'doc.'
 
     attr_reader :dialstring, :document, :tmp_dir, :job_id
 
@@ -35,7 +36,8 @@ module HylaFAX
     end
 
     def document_filename
-      @document_filename ||= Digest::MD5.file(document).hexdigest
+      @document_filename ||= DOCUMENT_PREFIX +
+        Digest::MD5.file(document).hexdigest
     end
 
     def document_uploaded?

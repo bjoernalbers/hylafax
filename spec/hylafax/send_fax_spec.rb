@@ -108,9 +108,10 @@ module HylaFAX
     describe '#set_document' do
       it 'sets the document' do
         allow(ftp).to receive(:sendcmd)
+        allow(subject).to receive(:remote_document) { 'tmp/doc.deadbeef' }
         subject.send(:set_document)
         expect(ftp).to have_received(:sendcmd).
-          with("JPARM DOCUMENT \"tmp/fb2e9fe62036b19cc3488b11fd64041a\"")
+          with("JPARM DOCUMENT \"tmp/doc.deadbeef\"")
       end
     end
 
@@ -149,6 +150,13 @@ module HylaFAX
         it 'is true' do
           expect(subject.send(:document_uploaded?)).to eq true
         end
+      end
+    end
+
+    describe '#document_filename' do
+      it 'joins document prefix with hexdigest' do
+        expect(subject.send(:document_filename)).
+          to eq('doc.fb2e9fe62036b19cc3488b11fd64041a')
       end
     end
 
