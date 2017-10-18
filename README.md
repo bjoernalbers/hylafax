@@ -32,9 +32,18 @@ Sending a fax:
 ```ruby
 require 'hylafax'
 
+# Send fax and return the job id.
 HylaFAX.sendfax(host: '10.2.2.1', dialstring: '0123456', document: 'foo.pdf')
+# => 29
 
-# This will send the fax and return the job id.
+```
+
+Checking fax statuses:
+
+```ruby
+# Query status by job id for completed faxes.
+HylaFAX.faxstat(host: '10.2.2.1')
+# => {29=>:done, 28=>:done, 27=>:failed}
 ```
 
 
