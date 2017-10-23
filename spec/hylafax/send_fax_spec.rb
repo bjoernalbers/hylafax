@@ -19,6 +19,7 @@ module HylaFAX
           set_dialstring
           set_pagewidth
           set_pagelength
+          set_pagechop
           set_document
           submit_job
         }.each do |cmd|
@@ -36,6 +37,7 @@ module HylaFAX
         expect(subject).to have_received(:set_dialstring).ordered
         expect(subject).to have_received(:set_pagewidth).ordered
         expect(subject).to have_received(:set_pagelength).ordered
+        expect(subject).to have_received(:set_pagechop).ordered
         expect(subject).to have_received(:set_document).ordered
         expect(subject).to have_received(:submit_job).ordered
       end
@@ -150,6 +152,17 @@ module HylaFAX
           subject.send(:set_pagelength)
           expect(ftp).to have_received(:sendcmd).with('JPARM PAGELENGTH 279')
         end
+      end
+    end
+
+    describe '#set_pagechop' do
+      before do
+        allow(ftp).to receive(:sendcmd)
+      end
+
+      it 'sets pagechop to default' do
+        subject.send(:set_pagechop)
+        expect(ftp).to have_received(:sendcmd).with('JPARM PAGECHOP "default"')
       end
     end
 
