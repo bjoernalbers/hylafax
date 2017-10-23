@@ -4,6 +4,7 @@ module HylaFAX
     DEFAULT_PAGEWIDTH = 209
     DEFAULT_PAGELENGTH = 296
     DEFAULT_PAGECHOP = "default"
+    DEFAULT_CHOPTHRESHOLD = 3
     DOCUMENT_PREFIX = 'doc.'
 
     attr_reader :dialstring, :document, :tmp_dir, :job_id, :pagewidth,
@@ -29,6 +30,7 @@ module HylaFAX
       set_pagewidth
       set_pagelength
       set_pagechop
+      set_chopthreshold
       set_document
       submit_job
       job_id
@@ -76,6 +78,10 @@ module HylaFAX
 
     def set_pagechop
       ftp.sendcmd(%Q{JPARM PAGECHOP "#{DEFAULT_PAGECHOP}"})
+    end
+
+    def set_chopthreshold
+      ftp.sendcmd(%Q{JPARM CHOPTHRESHOLD #{DEFAULT_CHOPTHRESHOLD}})
     end
 
     def set_document

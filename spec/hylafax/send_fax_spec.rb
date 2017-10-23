@@ -20,6 +20,7 @@ module HylaFAX
           set_pagewidth
           set_pagelength
           set_pagechop
+          set_chopthreshold
           set_document
           submit_job
         }.each do |cmd|
@@ -38,6 +39,7 @@ module HylaFAX
         expect(subject).to have_received(:set_pagewidth).ordered
         expect(subject).to have_received(:set_pagelength).ordered
         expect(subject).to have_received(:set_pagechop).ordered
+        expect(subject).to have_received(:set_chopthreshold).ordered
         expect(subject).to have_received(:set_document).ordered
         expect(subject).to have_received(:submit_job).ordered
       end
@@ -163,6 +165,17 @@ module HylaFAX
       it 'sets pagechop to default' do
         subject.send(:set_pagechop)
         expect(ftp).to have_received(:sendcmd).with('JPARM PAGECHOP "default"')
+      end
+    end
+
+    describe '#set_chopthreshold' do
+      before do
+        allow(ftp).to receive(:sendcmd)
+      end
+
+      it 'sets chopthreshold to default' do
+        subject.send(:set_chopthreshold)
+        expect(ftp).to have_received(:sendcmd).with('JPARM CHOPTHRESHOLD 3')
       end
     end
 
