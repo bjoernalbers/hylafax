@@ -17,6 +17,8 @@ module HylaFAX
           create_new_job
           set_lasttime
           set_dialstring
+          set_pagewidth
+          set_pagelength
           set_document
           submit_job
         }.each do |cmd|
@@ -32,6 +34,8 @@ module HylaFAX
         expect(subject).to have_received(:create_new_job).ordered
         expect(subject).to have_received(:set_lasttime).ordered
         expect(subject).to have_received(:set_dialstring).ordered
+        expect(subject).to have_received(:set_pagewidth).ordered
+        expect(subject).to have_received(:set_pagelength).ordered
         expect(subject).to have_received(:set_document).ordered
         expect(subject).to have_received(:submit_job).ordered
       end
@@ -102,6 +106,50 @@ module HylaFAX
         subject.send(:set_dialstring)
         expect(ftp).to have_received(:sendcmd).
           with("JPARM DIALSTRING \"#{dialstring}\"")
+      end
+    end
+
+    describe '#set_pagewidth' do
+      before do
+        allow(ftp).to receive(:sendcmd)
+      end
+
+      it 'sets default pagewidth' do
+        subject.send(:set_pagewidth)
+        expect(ftp).to have_received(:sendcmd).with('JPARM PAGEWIDTH 209')
+      end
+
+      context 'with custom pagewidth' do
+        subject { described_class.new(
+          ftp: ftp,dialstring: dialstring, document: document,
+          pagewidth: 216) }
+
+        it 'sets custom pagewidth' do
+          subject.send(:set_pagewidth)
+          expect(ftp).to have_received(:sendcmd).with('JPARM PAGEWIDTH 216')
+        end
+      end
+    end
+
+    describe '#set_pagelength' do
+      before do
+        allow(ftp).to receive(:sendcmd)
+      end
+
+      it 'sets default pagelength' do
+        subject.send(:set_pagelength)
+        expect(ftp).to have_received(:sendcmd).with('JPARM PAGELENGTH 296')
+      end
+
+      context 'with custom pagelength' do
+        subject { described_class.new(
+          ftp: ftp,dialstring: dialstring, document: document,
+          pagelength: 279) }
+
+        it 'sets custom pagelength' do
+          subject.send(:set_pagelength)
+          expect(ftp).to have_received(:sendcmd).with('JPARM PAGELENGTH 279')
+        end
       end
     end
 

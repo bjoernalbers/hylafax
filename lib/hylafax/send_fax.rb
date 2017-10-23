@@ -1,15 +1,20 @@
 module HylaFAX
   class SendFax < Command
     DEFAULT_TMP_DIR = 'tmp'
+    DEFAULT_PAGEWIDTH = 209
+    DEFAULT_PAGELENGTH = 296
     DOCUMENT_PREFIX = 'doc.'
 
-    attr_reader :dialstring, :document, :tmp_dir, :job_id
+    attr_reader :dialstring, :document, :tmp_dir, :job_id, :pagewidth,
+      :pagelength
 
     def initialize(opts = {})
       super
       @tmp_dir    = opts.fetch(:tmp_dir) { DEFAULT_TMP_DIR }
       @dialstring = opts.fetch(:dialstring)
       @document   = opts.fetch(:document)
+      @pagewidth  = opts.fetch(:pagewidth) { DEFAULT_PAGEWIDTH }
+      @pagelength  = opts.fetch(:pagelength) { DEFAULT_PAGELENGTH }
       @job_id     = nil
     end
 
@@ -20,6 +25,8 @@ module HylaFAX
       create_new_job
       set_lasttime
       set_dialstring
+      set_pagewidth
+      set_pagelength
       set_document
       submit_job
       job_id
@@ -55,6 +62,14 @@ module HylaFAX
 
     def set_dialstring
       ftp.sendcmd("JPARM DIALSTRING \"#{dialstring}\"")
+    end
+
+    def set_pagewidth
+      ftp.sendcmd(%Q{JPARM PAGEWIDTH #{pagewidth}})
+    end
+
+    def set_pagelength
+      ftp.sendcmd(%Q{JPARM PAGELENGTH #{pagelength}})
     end
 
     def set_document
