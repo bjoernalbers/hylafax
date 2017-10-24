@@ -164,7 +164,7 @@ module HylaFAX
 
       it 'sets pagechop to default' do
         subject.send(:set_pagechop)
-        expect(ftp).to have_received(:sendcmd).with('JPARM PAGECHOP "default"')
+        expect(ftp).to have_received(:sendcmd).with('JPARM PAGECHOP "NONE"')
       end
     end
 
@@ -175,7 +175,7 @@ module HylaFAX
 
       it 'sets chopthreshold to default' do
         subject.send(:set_chopthreshold)
-        expect(ftp).to have_received(:sendcmd).with('JPARM CHOPTHRESHOLD 3')
+        expect(ftp).to have_received(:sendcmd).with('JPARM CHOPTHRESHOLD 0')
       end
     end
 

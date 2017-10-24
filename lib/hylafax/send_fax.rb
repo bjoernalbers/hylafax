@@ -3,8 +3,8 @@ module HylaFAX
     DEFAULT_TMP_DIR = 'tmp'
     DEFAULT_PAGEWIDTH = 209
     DEFAULT_PAGELENGTH = 296
-    DEFAULT_PAGECHOP = "default"
-    DEFAULT_CHOPTHRESHOLD = 3
+    DEFAULT_PAGECHOP = 'NONE'
+    DEFAULT_CHOPTHRESHOLD = 0
     DOCUMENT_PREFIX = 'doc.'
 
     attr_reader :dialstring, :document, :tmp_dir, :job_id, :pagewidth,
