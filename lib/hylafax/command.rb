@@ -13,6 +13,8 @@ module HylaFAX
       @port     = opts.fetch(:port)     { DEFAULT_PORT }
       @user     = opts.fetch(:user)     { DEFAULT_USER }
       @password = opts.fetch(:password) { DEFAULT_PASSWORD }
+
+      @ftp.passive = true if opts[:passive]
     end
 
     private
