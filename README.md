@@ -49,11 +49,14 @@ HylaFAX.faxstat(host: '10.2.2.1')
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies.
-Then, run `rake spec` to run the tests.
-You can also run `bin/console` for an interactive prompt that will allow you to
-experiment.
+You need to have Docker installed.
+After checking out the repo, run the tests with:
 
+    $ docker-compose run --rm lib bin/rspec
+
+For an interactive prompt run:
+
+    $ docker-compose run --rm lib bin/console
 
 ## Contributing
 
